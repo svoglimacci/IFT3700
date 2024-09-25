@@ -9,8 +9,8 @@ def count_labels(labels: str) -> int:
     For example:
     "/m/04rlf,/m/06_fw,/m/09x0r" -> 3
     """
-    # TODO
-    pass
+    length = len(labels.split(","))
+    return length
 
 
 def convert_id(ID: str) -> str:
@@ -23,8 +23,12 @@ def convert_id(ID: str) -> str:
     While reading the file each time and looping through the elements to find a match works well enough for our
     purposes, think of ways this process could be sped up if say this function needed to be run 100000 times.
     """
-    # TODO
-    pass
+    with open("data/ontology.json") as f:
+        data = json.load(f)
+        for i in data:
+            if i["id"] == ID:
+                return i["name"]
+    return None
 
 
 def convert_ids(labels: str) -> str:
@@ -35,13 +39,17 @@ def convert_ids(labels: str) -> str:
     For example:
     "/m/04rlf,/m/06_fw,/m/09x0r" -> "Music|Skateboard|Speech"
     """
-    # TODO
-    pass
+    labels = labels.split(",")
+    string = [convert_id(i) for i in labels]
+
+    result = "|".join(string)
+
+    return result
 
 
 def contains_label(labels: pd.Series, label: str) -> pd.Series:
     """
-    Create a function that takes a Series of strings where each string is formatted as above 
+    Create a function that takes a Series of strings where each string is formatted as above
     (i.e. "|" separated label names like "Music|Skateboard|Speech") and returns a Series with just
     the values that include `label`.
 
@@ -54,8 +62,13 @@ def contains_label(labels: pd.Series, label: str) -> pd.Series:
     "Music|Skateboard|Speech"
     "Music|Piano"
     """
-    # TODO
-    pass
+
+    ## do not use contains()
+
+    result = labels[labels.str.contains(label)]
+
+
+    return result
 
 
 def get_correlation(labels: pd.Series, label_1: str, label_2: str) -> float:
@@ -66,8 +79,10 @@ def get_correlation(labels: pd.Series, label_1: str, label_2: str) -> float:
     For example, suppose the Series has 1000 values, of which 120 have label_1. If 30 of the 120
     have label_2, your function should return 0.25.
     """
-    # TODO
-    pass
+    label_1_series = contains_label(labels, label_1)
+    label_2_series = contains_label(label_1_series, label_2)
+
+    return len(label_2_series) / len(label_1_series)
 
 
 if __name__ == "__main__":

@@ -19,8 +19,30 @@ def download_audio(YTID: str, path: str) -> None:
       'https://www.youtube.com/watch?v='+YTID
       path: The path to the file where the audio will be saved
     """
-    # TODO
-    pass
+    if exists(path):
+        return
+
+    URL = 'https://www.youtube.com/watch?v=' + YTID
+
+    ydl_opts = {
+        'format': 'bestaudio',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+        }],
+        'outtmpl': path
+    }
+
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        error_code = ydl.download([URL])
+        if error_code:
+            raise Exception('Audio failed to download')
+
+
+
+
+
 
 
 def cut_audio(in_path: str, out_path: str, start: float, end: float) -> None:
@@ -34,5 +56,5 @@ def cut_audio(in_path: str, out_path: str, start: float, end: float) -> None:
       start: Indicates the start of the sequence (in seconds)
       end: Indicates the end of the sequence (in seconds)
     """
-    # TODO
-    pass
+    ffmpeg.input(in_path, ss=start, to=end).output(out_path).run()
+
