@@ -63,8 +63,6 @@ def contains_label(labels: pd.Series, label: str) -> pd.Series:
     "Music|Piano"
     """
 
-    ## do not use contains()
-
     result = labels[labels.str.contains(label)]
 
 

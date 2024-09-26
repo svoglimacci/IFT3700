@@ -1,4 +1,4 @@
-import youtube_dl
+import yt_dlp
 import ffmpeg
 import pandas as pd
 import numpy as np
@@ -22,7 +22,7 @@ def download_audio(YTID: str, path: str) -> None:
     if exists(path):
         return
 
-    URL = 'https://www.youtube.com/watch?v=' + YTID
+    URLS = ['https://www.youtube.com/watch?v=' + YTID]
 
     ydl_opts = {
         'format': 'bestaudio',
@@ -30,12 +30,12 @@ def download_audio(YTID: str, path: str) -> None:
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
         }],
-        'outtmpl': path
+        'outtmpl': path.strip('.mp3')
     }
 
 
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        error_code = ydl.download([URL])
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        error_code = ydl.download(URLS)
         if error_code:
             raise Exception('Audio failed to download')
 
